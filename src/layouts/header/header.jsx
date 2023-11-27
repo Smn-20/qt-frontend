@@ -14,8 +14,7 @@ function Header () {
     const navigate = useNavigate()
     const logout = () => {
             localStorage.clear()
-            navigate('/')
-      
+            window.location.reload()
         
     }
 

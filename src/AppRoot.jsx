@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.scss'
 import { Routingdata } from './common/routingdata'
 import { connect } from 'react-redux'
-// import PrivateRoute from './PrivateRoute'
+import PrivateRoute from './PrivateRoute'
 
 const App = lazy(() => import('./layouts/App'))
 const Loaderimage = lazy(() => import('./layouts/loader/loader'))
@@ -34,13 +34,13 @@ class AppRoot extends React.Component {
         
           
 
-              {/* <Route element={<PrivateRoute />}> */}
+              <Route element={<PrivateRoute />}>
               <Route path={`${import.meta.env.BASE_URL}`} element={<App {...this.props}/>} >
                 {Routingdata.map((idx) => (
                 <Route path={idx.path} element={idx.element} />
                 ))}
               </Route>
-              {/* </Route> */}
+              </Route>
   
           
   

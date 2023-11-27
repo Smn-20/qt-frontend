@@ -19,35 +19,27 @@ const Taskboard = () => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
   const [employees, setEmployees] = useState([]);
-  const [others, setOthers] = useState([]);
+  const [assignees, setAssignees] = useState([]);
+  const [selectedAssignees, setSelectedAssignees] = useState([]);
   const [task, setTask] = useState("");
   const [statustype, setstatusType] = useState("");
 
-  const fetchData = () => {
-    axios
-      .get("http://localhost:8000/count-summary/")
-      .then((response) => {
-        setSummary(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
 
-  const fetchEmployees = async () => {
+
+  const fetchAssignees = async () => {
     let my_token = localStorage.getItem("token");
     const config = { headers: { "Content-Type": "application/json" } };
     axios
       .get(`http://localhost:8000/list-staff/`, config)
       .then((res) => {
         if (res.status == 200 || res.status == 201) {
-          const employees_ = res.data.map((emp) => {
+          const assignees_ = res.data.map((emp) => {
             return {
               value: emp.id,
               label: emp.first_name + " " + emp.last_name,
             };
           });
-          setEmployees(employees_);
+          setAssignees(assignees_);
         } else {
           console.log("Failed!");
         }
@@ -64,8 +56,7 @@ const Taskboard = () => {
   ];
 
   useEffect(() => {
-    fetchData();
-    fetchEmployees();
+    fetchAssignees();
   }, []);
   return (
     <>
@@ -73,7 +64,7 @@ const Taskboard = () => {
         <Card.Header className="d-flex justify-content-between align-items-center">
           <Card.Title>Taskboard</Card.Title>
           <Button onClick={() => setShow(true)} variant="primary" type="button">
-            Assign Task
+            Create Task
           </Button>
         </Card.Header>
 
@@ -163,25 +154,11 @@ const Taskboard = () => {
           <Col lg={12} className="col-md-">
             <Card className="custom-card">
               <Card.Header>
-                <Card.Title>Assing New Task</Card.Title>
+                <Card.Title>Create New Task</Card.Title>
               </Card.Header>
               <Card.Body>
                 <div className="d-flex flex-column">
                   <Row>
-                    <Col xl={12}>
-                      <Form.Group className="form-group">
-                        <Form.Label>Select Employee</Form.Label>
-                        <Select
-                          isMulti
-                          options={employees}
-                          onChange={(e) => setOthers(e.map((emp) => emp.value))}
-                          classNamePrefix="Select2"
-                          className="multi-select"
-                          placeholder="Select them"
-                        />
-                      </Form.Group>
-                    </Col>
-
                     <Col xl={12}>
                       <Form.Group className="form-group">
                         <Form.Label>Task</Form.Label>
@@ -194,6 +171,45 @@ const Taskboard = () => {
                         />
                       </Form.Group>
                     </Col>
+                    <Col xl={6}>
+                      <Form.Group className="form-group">
+                        <Form.Label>Task</Form.Label>
+                        <Form.Control
+                          type="text"
+                          className="form-control"
+                          name="example-text-input"
+                          placeholder="Task"
+                          onChange={(e) => setTask(e.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col xl={6}>
+                      <Form.Group className="form-group">
+                        <Form.Label>Task</Form.Label>
+                        <Form.Control
+                          type="text"
+                          className="form-control"
+                          name="example-text-input"
+                          placeholder="Task"
+                          onChange={(e) => setTask(e.target.value)}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col xl={12}>
+                      <Form.Group className="form-group">
+                        <Form.Label>Select Assignees</Form.Label>
+                        <Select
+                          isMulti
+                          options={assignees}
+                          onChange={(e) => setSelectedAssignees(e.map((emp) => emp.value))}
+                          classNamePrefix="Select2"
+                          className="multi-select"
+                          placeholder="Select them"
+                        />
+                      </Form.Group>
+                    </Col>
+
+                    
                   </Row>
 
                   <Button className="btn ripple btn-primary my-3">
