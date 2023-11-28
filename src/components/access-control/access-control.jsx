@@ -22,9 +22,27 @@ function AccessControl() {
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [users, setUsers] = useState();
+  const [users_, setUsers_] = useState();
   const [roles, setRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [show, setShow] = useState(false);
+
+  const searchUser = (value) => {
+
+    if (value === '') {
+      fetchUsers(); // Reset to the original list of projects
+    } else {
+      const filteredUsers = users_.filter((user) => {
+        const userNameLowercase = (user.names+user.email).toLowerCase();
+        const searchTermLowercase = value.toLowerCase();
+        return userNameLowercase.includes(searchTermLowercase)
+      });
+
+      setUsers(filteredUsers);
+    }
+  };
+
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -63,6 +81,7 @@ function AccessControl() {
     try {
       const response = await axios.get(`http://localhost:8000/users/`, config);
       setUsers(response.data);
+      setUsers_(response.data);
       fetchRoles();
     } catch (error) {
       console.error("Error fetching payrolls:", error);
@@ -98,9 +117,22 @@ function AccessControl() {
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <Card.Title>Users</Card.Title>
+              <Row>
+            <Col>
+              <input
+                type="text"
+                placeholder="Search..."
+                className="form-control"
+                onChange={(e)=>searchUser(e.target.value)}
+              />
+            </Col>
+            <Col>
               <Button variant="primary" onClick={handleShow}>
                 Register New User
               </Button>
+            </Col>
+          </Row>
+              
             </Card.Header>
             <Card.Body>
               <table className="table table-striped table-bordered">
